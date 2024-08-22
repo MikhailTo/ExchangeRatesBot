@@ -2,6 +2,7 @@ from aiogram import Router, F, Bot
 from aiogram.filters import Command
 from aiogram.types import Message
 from fluent.runtime import FluentLocalization
+from .get_exgange_rates import CurrencyConverter
 
 router = Router()
 
@@ -34,8 +35,7 @@ async def text_message(message: Message, bot: Bot, l10n: FluentLocalization):
     :param message: сообщение от пользователя дла отправки валюты
     :param l10n: объект локализации
     """
-    if message.text.isdigit():
-        exchange_rate = await get_exchange_rate(message.text),
-        await bot.answer(exchange_rate.html_text, parse_mode="HTML")
+    if answer := CurrencyConverter.build_answer(message):
+        await bot.answer(answer.html_text, parse_mode="HTML")
     else: 
         return await message.reply(l10n.format_value("not-number-text-error"))
