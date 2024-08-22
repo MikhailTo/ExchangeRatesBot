@@ -1,14 +1,21 @@
+import json
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
 import asyncio
 import aiohttp
-import json
-from config import settings
+from bot.config import settings
+
+
+
+
+
 
 class CurrencyConverter:
-    def __init__(self) -> None:
+    def __init__(self, l10n) -> None:
+        self.l10n = l10n
         self.url = settings.template_exchange_rates_url
         self.date = settings.default_date
         self.apiVersion = settings.default_apiVersion
@@ -17,7 +24,7 @@ class CurrencyConverter:
 
     def set_endpoint(self, endpoint) -> None:
         self.endpoint = endpoint
-    
+        
     def set_currency_code(self, currency_code) -> None:
         self.currency_code = currency_code
 
@@ -39,40 +46,11 @@ class CurrencyConverter:
         api_url = await self.build_api_url()
         response_data = await self.fetch_json_data(api_url)
         return response_data[endpoint]
+    
+    def get_currency_symbol(self, currency_code):
+        return self.l10n.format_value(f"currency-symbols.{currency_code}")
 
-    def get_currency_sign(self, currency_code: str) -> str:
-        currency_symbol = {
-            "rub": "₽",
-            "usd": "$",
-            "eur": "€",
-            "gbp": "£",
-            "jpy": "¥",
-            "cny": "¥",
-            "aud": "A$",
-            "cad": "C$",
-            "chf": "₣",
-            "dkk": "kr",
-            "hkd": "HK$",
-            "huf": "Ft",
-            "inr": "₹",
-            "nzd": "NZ$",
-            "pln": "zł",
-            "sgd": "S$",
-            "thb": "฿",
-            "try": "₺",
-            "twd": "NT$",
-            "zar": "R",
-            "brl": "R$",
-            "clp": "CLP$",
-            "cop": "COP$",
-            "mxn": "MX$",
-            "pen": "S/.",
-            "ars": "AR$",
-            #...
-        }
-        return currency_symbol[currency_code]
-
-    def get_single_currency_rate(self, 
+    def get_single_currency_rate(self,
         endpoint: str, currency_code: str) -> str:
         rates = asyncio.run(self.get_all_currency_rates(endpoint))
         return f"{rates[currency_code]:.2f}"
@@ -80,9 +58,9 @@ class CurrencyConverter:
     def build_answer(self, message: str) -> str | None:
         if message.text.isdigit():
             money_amount = int(message.text)
-            currency_rate = get_single_currency_rate(self.endpoint, self.currency_code),
-            currency_symbol = get_currency_symbol(self.currency_code)
+            currency_rate = self.get_single_currency_rate(self.endpoint, self.currency_code),
+            currency_symbol = self.get_currency_symbol(currency_symbol)
             answer = f"{money_amount * currency_rate} {currency_symbol}"
             return answer
-        else: 
+        else:
             return None

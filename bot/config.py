@@ -1,6 +1,5 @@
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import SecretStr
-from pydantic_settings import BaseSettings
-
 
 class Settings(BaseSettings):
     bot_token: SecretStr
@@ -12,9 +11,11 @@ class Settings(BaseSettings):
     default_currency_code: str = "rub"
     template_exchange_rates_url: str = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@{date}/{apiVersion}/currencies/{endpoint}.json"
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_nested_delimiter="_",
+    )
+        
 
 settings = Settings()
