@@ -29,6 +29,7 @@ async def main():
                 parse_mode=ParseMode.HTML
                 )
         )
+
     dp = Dispatcher()
     router = setup_routers()
     dp.include_router(router)
