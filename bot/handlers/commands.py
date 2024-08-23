@@ -35,7 +35,7 @@ async def text_message(message: Message, bot: Bot, l10n: FluentLocalization):
     :param message: сообщение от пользователя дла отправки валюты
     :param l10n: объект локализации
     """
-    if answer := CurrencyConverter.build_answer(message):
+    if answer := CurrencyConverter(l10n).build_answer(message):
         await bot.answer(answer.html_text, parse_mode="HTML")
     else: 
         return await message.reply(l10n.format_value("not-number-text-error"))
