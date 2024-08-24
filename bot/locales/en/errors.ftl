@@ -1,0 +1,1 @@
+incorrectly_chosen_currency = This currency is not in the list of available currencies

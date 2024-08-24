@@ -1,0 +1,1 @@
+incorrectly_chosen_currency = Данная валюта отсутствует в списке доступных

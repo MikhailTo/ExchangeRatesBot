@@ -7,10 +7,10 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from fluent.runtime import FluentLocalization, FluentResourceLoader
 
-from bot.handlers import setup_routers
-from bot.commandsworker import set_bot_commands
-from bot.middlewares import L10nMiddleware
-from bot.config import settings
+from handlers import setup_routers
+from commandsworker import set_bot_commands
+from middlewares import L10nMiddleware
+from config import settings
 
 
 async def main():
@@ -24,7 +24,7 @@ async def main():
     # Локализация 
     locales_path = Path(__file__).parent.joinpath("locales")
     l10n_loader = FluentResourceLoader(str(locales_path) + "/{locale}")
-    l10n = FluentLocalization(["en", "ru"], ["strings.ftl", "errors.ftl", "currencies.ftl"], l10n_loader)
+    l10n = FluentLocalization(["ru", "en"], ["strings.ftl", "errors.ftl"], l10n_loader)
 
   
     # Настройка бота
