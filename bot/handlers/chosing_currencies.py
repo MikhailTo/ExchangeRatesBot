@@ -55,8 +55,8 @@ async def currency_to_chosen(message: Message, l10n: FluentLocalization, state: 
     # chosen_currency_by_user = await state.get_data()
     print(f"State: {state.get_data()}")
     await message.answer(text=l10n.format_value("chosen_currency_code_from_to", {
-        "chosen_currency_code_from": chosen_currency_by_user['chosen_currency_code_from'],
-        "chosen_currency_code_to": message.text.lower()}), 
+        "chosen_currency_code_from": chosen_currency_by_user['chosen_currency_code_from'].upper(),
+        "chosen_currency_code_to": message.text.upper()}), 
                          reply_markup=ReplyKeyboardRemove())
     chosen_currency_by_user["chosen_currency_code_to"] = message.text.lower()
     await state.clear()
