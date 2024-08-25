@@ -1,11 +1,7 @@
-from aiogram import Router, F
+from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 from fluent.runtime import FluentLocalization
-from .currency_converter import CurrencyConverter
-
-from config import settings
-
 
 router = Router()
 

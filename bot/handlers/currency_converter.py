@@ -18,14 +18,29 @@ class CurrencyConverter:
         }
 
     def set_currency_code_from(self, currency_code) -> None:
+        """
+        Устанавливает код валюты, из которой производится конвертация.
+
+        :param currency_code: код валюты для установки в качестве исходной
+        """
         self.user_data["chosen_currency_code_from"] = currency_code
         print(f'chosen_currency_code_from: {self.user_data["chosen_currency_code_from"]}')
 
     def set_currency_code_to(self, currency_code) -> None:
+        """
+        Устанавливает код валюты, в которую производится конвертация.
+
+        :param currency_code: код валюты для установки в качестве целевой
+        """
         self.user_data["chosen_currency_to"] = currency_code
         print(f'chosen_currency_code_to: {self.user_data["chosen_currency_code_to"]}')
 
     async def build_api_url(self) -> str:
+        """
+        Формирует URL для API запроса курсов валют.
+
+        :return: сформированный URL для API
+        """
         return self.url.format(
             date=self.date,
             apiVersion=self.apiVersion,
@@ -33,6 +48,12 @@ class CurrencyConverter:
             )
 
     async def fetch_json_data(self, api_url: str) -> dict:
+        """
+        Получает JSON данные по указанному URL API.
+
+        :param api_url: URL для получения данных
+        :return: данные JSON ответа
+        """
         async with aiohttp.ClientSession() as session:
             async with session.get(api_url) as resp:
                 response = await resp.read()
@@ -40,16 +61,35 @@ class CurrencyConverter:
         return response_data
 
     async def get_all_currency_rates(self, currency_code_from) -> dict:
+        """
+        Получает все курсы валют для указанной исходной валюты.
+
+        :param currency_code_from: код исходной валюты
+        :return: словарь курсов валют
+        """
         api_url = await self.build_api_url()
         response_data = await self.fetch_json_data(api_url)
         return response_data[currency_code_from]
  
     async def get_single_currency_rate(self,
         currency_code_from: str, currency_code_to: str) -> float:
+        """
+        Получает обменный курс между двумя указанными валютами.
+
+        :param currency_code_from: код исходной валюты
+        :param currency_code_to: код целевой валюты
+        :return: обменный курс
+        """
         rates = await self.get_all_currency_rates(currency_code_from)
         return rates[currency_code_to]
 
     async def build_answer(self, message: str) -> str | None:
+        """
+        Формирует ответ на запрос конвертации валюты.
+
+        :param message: сообщение пользователя с суммой для конвертации
+        :return: отформатированный ответ с конвертированной суммой или None, если ввод некорректен
+        """
         if message.text.lstrip('+-').isdigit():
             money_amount = int(message.text)
         else:
