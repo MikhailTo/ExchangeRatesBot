@@ -1,3 +1,4 @@
+import re
 import json
 import aiohttp
 from fluent.runtime.types import fluent_number
@@ -90,16 +91,13 @@ class CurrencyConverter:
         :param message: сообщение пользователя с суммой для конвертации
         :return: отформатированный ответ с конвертированной суммой или None, если ввод некорректен
         """
-        import re
 
-        
-        p = re.compile("\d+([.,]\d+)?")
-
-        if p.match(message.text.lstrip("+-")):
+        if re.compile("\d+([.,]\d+)?").match(message.text.lstrip("+-")):
 
             number_string = message.text.replace(",", ".")
+
             try:
-                money_amount = float(message.text)
+                money_amount = float(number_string)
             except ValueError:
                 print(f"Converting the string {message.text} to a number (float) is not possible")
         else:
@@ -111,7 +109,7 @@ class CurrencyConverter:
             )
 
         counted_currency = round(money_amount * float(currency_rate), 2)
-        print(f"counted_currency: {counted_currency}")
+        
         currency_number_from = fluent_number(
             money_amount, style="currency",
             currency=self.user_data["chosen_currency_code_from"].upper())
