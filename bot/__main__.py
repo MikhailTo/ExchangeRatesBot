@@ -21,14 +21,14 @@ async def main():
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
 
-    # Локализация 
+    # Локализация
     locales_path = Path(__file__).parent.joinpath("locales")
     l10n_loader = FluentResourceLoader(str(locales_path) + "/{locale}")
     l10n = FluentLocalization(["ru", "en"], ["strings.ftl", "errors.ftl"], l10n_loader)
 
-  
+
     # Настройка бота
-    bot = Bot(token=settings.bot_token.get_secret_value(), 
+    bot = Bot(token=settings.bot_token.get_secret_value(),
         default=DefaultBotProperties(
                 parse_mode=ParseMode.HTML
                 )

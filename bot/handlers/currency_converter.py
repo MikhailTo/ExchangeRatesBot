@@ -24,7 +24,7 @@ class CurrencyConverter:
         :param currency_code: код валюты для установки в качестве исходной
         """
         self.user_data["chosen_currency_code_from"] = currency_code
-        print(f'chosen_currency_code_from: {self.user_data["chosen_currency_code_from"]}')
+
 
     def set_currency_code_to(self, currency_code) -> None:
         """
@@ -33,7 +33,7 @@ class CurrencyConverter:
         :param currency_code: код валюты для установки в качестве целевой
         """
         self.user_data["chosen_currency_to"] = currency_code
-        print(f'chosen_currency_code_to: {self.user_data["chosen_currency_code_to"]}')
+
 
     async def build_api_url(self) -> str:
         """
@@ -57,7 +57,7 @@ class CurrencyConverter:
         async with aiohttp.ClientSession() as session:
             async with session.get(api_url) as resp:
                 response = await resp.read()
-            response_data = json.loads(response.decode('utf-8'))
+            response_data = json.loads(response.decode("utf-8"))
         return response_data
 
     async def get_all_currency_rates(self, currency_code_from) -> dict:
@@ -90,8 +90,18 @@ class CurrencyConverter:
         :param message: сообщение пользователя с суммой для конвертации
         :return: отформатированный ответ с конвертированной суммой или None, если ввод некорректен
         """
-        if message.text.lstrip('+-').isdigit():
-            money_amount = int(message.text)
+        import re
+
+        
+        p = re.compile("\d+([.,]\d+)?")
+
+        if p.match(message.text.lstrip("+-")):
+
+            number_string = message.text.replace(",", ".")
+            try:
+                money_amount = float(message.text)
+            except ValueError:
+                print(f"Converting the string {message.text} to a number (float) is not possible")
         else:
             return None
 
@@ -101,7 +111,7 @@ class CurrencyConverter:
             )
 
         counted_currency = round(money_amount * float(currency_rate), 2)
-
+        print(f"counted_currency: {counted_currency}")
         currency_number_from = fluent_number(
             money_amount, style="currency",
             currency=self.user_data["chosen_currency_code_from"].upper())
